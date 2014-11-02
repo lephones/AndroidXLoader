@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, LoaderActivity!</string>
+    <string name="app_name">Loader</string>
+
+</resources>
