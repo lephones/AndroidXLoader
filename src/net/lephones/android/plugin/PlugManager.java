@@ -5,17 +5,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringBufferInputStream;
-import java.io.StringReader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.lephones.android.R;
-
+import net.lephones.android.resources.ResourcesManager;
 import android.content.Context;
 
 public class PlugManager {
@@ -81,7 +78,7 @@ public class PlugManager {
 			while((s = buffered.readLine()) != null){
 				String[] arrays = s.split("\\|");
 				
-				Plugin plugin = new Plugin(context.getApplicationInfo().dataDir + File.separator  + "lib" + File.separator + arrays[2]);
+				Plugin plugin = new Plugin(arrays[0],context.getApplicationInfo().dataDir + File.separator  + "lib" + File.separator + arrays[2]);
 				this.pluginMap.put(arrays[0], plugin);
 			}
 		} catch (IOException e) {
@@ -98,4 +95,13 @@ public class PlugManager {
 		return this.pluginMap.get(name);
 	}
 
+	public void setRm(ResourcesManager rm) {
+		this.rm = rm;
+	}
+	
+	private ResourcesManager rm ;
+	
+	public ResourcesManager getRm() {
+		return rm;
+	}
 }

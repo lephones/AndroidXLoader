@@ -1,4 +1,4 @@
-package net.lephones.android;
+package net.lephones.android.demo;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -4,15 +4,17 @@ import java.lang.reflect.Field;
 import java.util.Iterator;
 
 import dalvik.system.PathClassLoader;
-
 import net.lephones.android.classLoader.BootstrapClassloader;
 import net.lephones.android.classLoader.OriginClassLoader;
 import net.lephones.android.classLoader.PluginClassloader;
 import net.lephones.android.plugin.PlugManager;
+import net.lephones.android.resources.ResourcesManager;
 import net.lephones.android.utils.BaseUtil;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
+import android.view.ViewStub;
 
 /**
  * application 一切从这里开始
@@ -22,15 +24,19 @@ import android.content.Context;
 public class LaucherApplication extends Application {
 	
 	private static final String TAG = LaucherApplication.class.getName();
+
+	public static LaucherApplication instance;
 	
 	private Field classLoaderField;
 	private Object mPackageInfo;
 
 	private BootstrapClassloader loader;
+
+	private Field loadedApkField;
 	
 	@Override
 	public void onCreate() {
-	
+		instance = this;
 		super.onCreate();
 		Context context = getBaseContext();
 		try {
@@ -39,7 +45,7 @@ public class LaucherApplication extends Application {
 			parentLoader.setAccessible(true);
 			parentLoader.set(classLoader, new OriginClassLoader());
 			
-			Field loadedApkField = context.getClass().getDeclaredField("mPackageInfo");
+			loadedApkField = context.getClass().getDeclaredField("mPackageInfo");
 			loadedApkField.setAccessible(true);
 			mPackageInfo = loadedApkField.get(context);
 			classLoaderField = mPackageInfo.getClass().getDeclaredField("mClassLoader");
@@ -61,11 +67,41 @@ public class LaucherApplication extends Application {
 		
 	}
 
+	/**
+	 * 下面的代码仅用于测试
+	 * @param pm
+	 */
+	@Deprecated
 	private void initPlugLoader(PlugManager pm) {
+		ResourcesManager rm = new ResourcesManager(getResources());
 		Iterator<String> it = pm.getPluginAllNames().iterator();
 		while(it.hasNext()){
 			String name =it.next();
 			loader.addPluginLoader(name, new PluginClassloader(pm.getPlugByName(name), pm.getPluginLibDir(), loader));
+			rm.addResourcesMap(pm.getPlugByName(name));
+		}
+		pm.setRm(rm);
+	}
+	
+	public void setResources(Resources rs) {
+		Field field;
+		try {
+			field = mPackageInfo.getClass().getDeclaredField("mResources");
+
+			field.setAccessible(true);
+			field.set(mPackageInfo, rs);
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

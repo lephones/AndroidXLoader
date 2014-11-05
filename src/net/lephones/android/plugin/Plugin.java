@@ -16,8 +16,8 @@ public class Plugin {
 	
 	private String[] components ;
 
-	public Plugin(String path) {
-		this.name = "test";
+	public Plugin(String name ,String path) {
+		this.name = name;
 		this.version = version;
 		this.path = path;
 	}

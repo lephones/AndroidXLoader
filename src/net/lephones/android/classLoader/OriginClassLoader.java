@@ -22,7 +22,13 @@ public class OriginClassLoader extends ClassLoader {
 	protected Class<?> findClass(String className)
 			throws ClassNotFoundException {
 		Log.e(TAG, "find " + className);
-		return super.findClass(className);
+		Class clazz = null;
+		try{
+			super.findClass(className);
+		}catch(ClassNotFoundException e){
+			//用bootstrapClassLoader.loader
+		}
+		return clazz;
 	}
 
 	@Override
