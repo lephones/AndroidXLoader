@@ -43,7 +43,7 @@ public class LaucherApplication extends Application {
 			ClassLoader classLoader = getClass().getClassLoader();
 			Field parentLoader = ClassLoader.class.getDeclaredField("parent");
 			parentLoader.setAccessible(true);
-			parentLoader.set(classLoader, new OriginClassLoader());
+			//parentLoader.set(classLoader, new OriginClassLoader());
 			
 			loadedApkField = context.getClass().getDeclaredField("mPackageInfo");
 			loadedApkField.setAccessible(true);
